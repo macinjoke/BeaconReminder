@@ -11,8 +11,8 @@ import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
 
 public class Mbaas {
-    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
-    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
+    private static final String APP_KEY="APP_KEY";
+    private static final String CLIENT_KEY="CLIENT_KEY";
     public Mbaas(Context context){
         NCMB.initialize(context,APP_KEY,CLIENT_KEY);
     }
@@ -30,9 +30,11 @@ public class Mbaas {
             public void done(NCMBException e) {
                 if(e != null){
                     //保存に失敗した場合の処理
+                    System.out.println("failed");
 
                 }else {
                     //保存に成功した場合の処理
+                    System.out.println("success");
 
                 }
             }
