@@ -19,6 +19,11 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //NCMB initialize
+        Mbaas.initialize(this.getApplicationContext());
+
+        Mbaas.storeTask("aiueo");
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
