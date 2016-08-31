@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import nifty.intern.teamc.database.DatabaseManager;
 
@@ -37,6 +39,12 @@ public class TaskListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        String[] tasks = { "taskA", "taskB", "taskC", "taskD" };
+        ListView lv = (ListView) findViewById(R.id.listView1);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_expandable_list_item_1, tasks);
+        lv.setAdapter(adapter);
     }
 
     @Override
