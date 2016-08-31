@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -24,19 +25,15 @@ public class IbeaconReceiver extends Service {
     private Runnable runnable;
 
     @Override
-    public IBinder onBind(Intent arg0){
-        return null;
-    }
-
-    @Override
     public void onCreate() {
 
-        Log.d(TAG, "InitIBeacon");
+        Log.d(TAG, "onCreate");
 
         // ビーコン受信用のクラスを利用する
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
+        /*
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -53,6 +50,7 @@ public class IbeaconReceiver extends Service {
 
         // 初回実行を書く（再帰処理となる）
         mHandler.postDelayed(runnable, REPEAT_INTERVAL);
+        */
 
     }
 
@@ -100,12 +98,45 @@ public class IbeaconReceiver extends Service {
                 Log.d(TAG, "Minor: " + minor);
             }
         }
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                // 繰り返し処理を書く
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                // 終了 -> 開始をしないとなぜか更新されない
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+                // 次回処理をセットする
+                mHandler.postDelayed(runnable, REPEAT_INTERVAL);
+            }
+        };
+
+        // 初回実行を書く（再帰処理となる）
+        mHandler.postDelayed(runnable, REPEAT_INTERVAL);
+
+        return START_STICKY;
+
+        //return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         mHandler.removeCallbacks(runnable); // 終了時にコールバック削除
 
-        mBluetoothAdapter.stopLeScan(mLeScanCallback); // スキャン終了
+        //mBluetoothAdapter.stopLeScan(mLeScanCallback); // スキャン終了
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent arg0){
+        return null;
     }
 }
