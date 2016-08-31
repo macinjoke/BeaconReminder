@@ -24,6 +24,10 @@ public class IbeaconReceiver extends Service {
     private final int REPEAT_INTERVAL = 10000; // 更新のくりかえし間隔（ms）
     private Runnable runnable;
 
+    private static String uuid;
+    private static String major;
+    private static String minor;
+
     @Override
     public void onCreate() {
 
@@ -33,25 +37,6 @@ public class IbeaconReceiver extends Service {
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-        /*
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                // 繰り返し処理を書く
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                // 終了 -> 開始をしないとなぜか更新されない
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
-
-                // 次回処理をセットする
-                mHandler.postDelayed(runnable, REPEAT_INTERVAL);
-            }
-        };
-
-        // 初回実行を書く（再帰処理となる）
-        mHandler.postDelayed(runnable, REPEAT_INTERVAL);
-        */
-
     }
 
     // (iBeaconに限らず)BLE機器をスキャンした際のコールバック
@@ -60,19 +45,27 @@ public class IbeaconReceiver extends Service {
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             // 受信できた端末の情報をログ出力
             Log.d(TAG, "receive");
-            getScanData(scanRecord); // iBeacon端末に絞込み、ログを出力する
-            Log.d(TAG, "device name: " + device.getName()); // デバイス名 (null)
-            Log.d(TAG, "device address: " + device.getAddress()); // MAC Address
+            boolean flag = getScanData(scanRecord); // iBeacon端末に絞込み、ログを出力する（flagはiBeaconか否か）
+
+            // iBeacon端末なら、詳細をログに出力する
+            if (flag == true) {
+                Log.d(TAG, "UUID: " + uuid);
+                Log.d(TAG, "Major: " + major);
+                Log.d(TAG, "Minor: " + minor);
+                Log.d(TAG, "device name: " + device.getName()); // デバイス名 (null)
+                Log.d(TAG, "device address: " + device.getAddress()); // MAC Address
+                Log.d(TAG, "Device Strength; " + Integer.toString(rssi)); // 電波強度
+            }
         }
     };
 
     // スキャンしたデータからiBeacon端末であるかどうかを絞り込み、iBeaconであればログを出力する
-    private void getScanData (byte[] scanRecord) {
+    private boolean getScanData (byte[] scanRecord) {
         if (scanRecord.length > 30) {
             if ( (scanRecord[5] == (byte)0x4c ) && (scanRecord[6] == (byte)0x00) &&
                     (scanRecord[7] == (byte)0x02) && (scanRecord[8] == (byte)0x15)) {
                 // 受信したUUID, Major, Minorの型変換
-                String uuid = Integer.toHexString(scanRecord[9] & 0xff)
+                uuid = Integer.toHexString(scanRecord[9] & 0xff)
                         +  Integer.toHexString(scanRecord[10] & 0xff)
                         +  Integer.toHexString(scanRecord[11] & 0xff)
                         +  Integer.toHexString(scanRecord[12] & 0xff)
@@ -88,15 +81,17 @@ public class IbeaconReceiver extends Service {
                         +  Integer.toHexString(scanRecord[22] & 0xff)
                         +  Integer.toHexString(scanRecord[23] & 0xff)
                         +  Integer.toHexString(scanRecord[24] & 0xff);
-                String major = Integer.toHexString(scanRecord[25] & 0xff)
+                major = Integer.toHexString(scanRecord[25] & 0xff)
                         + Integer.toHexString(scanRecord[26] & 0xff);
-                String minor = Integer.toHexString(scanRecord[27] & 0xff)
+                minor = Integer.toHexString(scanRecord[27] & 0xff)
                         + Integer.toHexString(scanRecord[28] & 0xff);
 
-                Log.d(TAG, "UUID: " + uuid);
-                Log.d(TAG, "Major: " + major);
-                Log.d(TAG, "Minor: " + minor);
+                return true;
+            } else {
+                return false;
             }
+        } else {
+            return false;
         }
 
     }
@@ -131,7 +126,7 @@ public class IbeaconReceiver extends Service {
     public void onDestroy() {
         mHandler.removeCallbacks(runnable); // 終了時にコールバック削除
 
-        //mBluetoothAdapter.stopLeScan(mLeScanCallback); // スキャン終了
+        mBluetoothAdapter.stopLeScan(mLeScanCallback); // スキャン終了
     }
 
     @Nullable
