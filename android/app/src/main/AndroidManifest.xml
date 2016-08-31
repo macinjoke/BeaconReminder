@@ -27,7 +27,7 @@
         <activity
             android:name=".CreateTaskActivity"
             android:label="@string/title_activity_create_task"></activity>
-        <service android:name="IbeaconReceiver" />
+        <service android:name="nifty.intern.teamc.IbeaconReceiver.IbeaconReceiver" />
     </application>
 
 </manifest>
