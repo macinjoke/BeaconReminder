@@ -23,10 +23,8 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Log.d("TaskList", "FOOBAR");
-
         //Bluetooth Initialize
-        startService(new Intent(TaskListActivity.this, IbeaconReceiver.class));
+        startService(new Intent(this, IbeaconReceiver.class));
 
         //NCMB initialize
         DatabaseManager.initialize(this.getApplicationContext());
