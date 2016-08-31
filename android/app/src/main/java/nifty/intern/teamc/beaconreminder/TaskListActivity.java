@@ -18,16 +18,6 @@ import java.util.List;
 import nifty.intern.teamc.database.DatabaseManager;
 
 public class TaskListActivity extends AppCompatActivity {
-    static private List<String> tasklist = new ArrayList<String>();
-
-    static public void setList(List<String> taskls){
-//        tasklist.add(taskname);
-        tasklist = taskls;
-    }
-
-    static public List<String> getList(){
-        return tasklist;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,34 +26,25 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //NCMB initialize
-        DatabaseManager.initialize(this.getApplicationContext());
-        DatabaseManager.getAllTask();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Intent intent = new Intent();
                 intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.CreateTaskActivity");
-
-// SubActivity の起動
                 startActivity(intent);
             }
         });
+    }
 
-//        String[] tasks = { "taskA", "taskB", "taskC", "taskD" };
-
-        DatabaseManager.getAllTask();
-        List<String> tasks = tasklist;
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+tasks);
-        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"+tasklist);
+    @Override
+    public void onStart(){
+        super.onStart();
         ListView lv = (ListView) findViewById(R.id.listView1);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_expandable_list_item_1, tasks);
-        lv.setAdapter(adapter);
+        DatabaseManager databaseManager = new DatabaseManager(this, lv);
+        //NCMB initialize
+        databaseManager.initialize(this.getApplicationContext());
+        databaseManager.execute();
     }
 
     @Override
