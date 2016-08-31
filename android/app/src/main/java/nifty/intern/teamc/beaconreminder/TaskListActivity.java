@@ -12,9 +12,21 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.List;
+
 import nifty.intern.teamc.database.DatabaseManager;
 
 public class TaskListActivity extends AppCompatActivity {
+    static private List<String> tasklist;
+
+    static public void setList(List<String> taskls){
+//        tasklist.add(taskname);
+        tasklist = taskls;
+    }
+
+    static public List<String> getList(){
+        return tasklist;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +37,7 @@ public class TaskListActivity extends AppCompatActivity {
 
         //NCMB initialize
         DatabaseManager.initialize(this.getApplicationContext());
+        DatabaseManager.getAllTask();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
