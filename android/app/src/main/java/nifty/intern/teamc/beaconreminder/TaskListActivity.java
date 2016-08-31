@@ -12,12 +12,13 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nifty.intern.teamc.database.DatabaseManager;
 
 public class TaskListActivity extends AppCompatActivity {
-    static private List<String> tasklist;
+    static private List<String> tasklist = new ArrayList<String>();
 
     static public void setList(List<String> taskls){
 //        tasklist.add(taskname);
@@ -53,7 +54,12 @@ public class TaskListActivity extends AppCompatActivity {
             }
         });
 
-        String[] tasks = { "taskA", "taskB", "taskC", "taskD" };
+//        String[] tasks = { "taskA", "taskB", "taskC", "taskD" };
+
+        DatabaseManager.getAllTask();
+        List<String> tasks = tasklist;
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+tasks);
+        System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"+tasklist);
         ListView lv = (ListView) findViewById(R.id.listView1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_expandable_list_item_1, tasks);
