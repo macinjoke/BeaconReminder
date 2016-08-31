@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import nifty.intern.teamc.database.DatabaseManager;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -40,8 +42,8 @@ public class CreateTaskActivity extends AppCompatActivity {
                                    @Override
                                    public void onClick(View v) {
                                        EditText editText = (EditText) findViewById(R.id.editText);
-                                       String text = editText.getText().toString();
-                                       Log.d("CreateTaskActivity", text);
+                                       String taskName = editText.getText().toString();
+                                       DatabaseManager.storeTask(taskName);
                                    }
                                }
         );
