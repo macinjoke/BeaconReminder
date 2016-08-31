@@ -3,18 +3,57 @@ package nifty.intern.teamc.database;
 import android.content.Context;
 
 import com.nifty.cloud.mb.core.DoneCallback;
+import com.nifty.cloud.mb.core.FindCallback;
 import com.nifty.cloud.mb.core.NCMB;
 import com.nifty.cloud.mb.core.NCMBException;
 import com.nifty.cloud.mb.core.NCMBObject;
+import com.nifty.cloud.mb.core.NCMBQuery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import nifty.intern.teamc.beaconreminder.TaskListActivity;
 
 /**
  * Created by USER on 2016/08/31.
  */
 public class DatabaseManager {
-    private static final String APP_KEY="APP_KE";
-    private static final String CLIENT_KEY="CLIENT_KEY";
+    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
+    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
+    public List<String> tasklist = new ArrayList<String>();
+
     public static void initialize(Context context) {
         NCMB.initialize(context, APP_KEY, CLIENT_KEY);
+    }
+
+
+    public static void getAllTask(){
+        //TestClassを検索するためのNCMBQueryインスタンスを作成
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>("TestClass");
+        //keyというフィールドがvalueとなっているデータを検索する条件を設定
+        query.whereExists("task");
+
+
+
+        //データストアからデータを検索
+        query.findInBackground(new FindCallback<NCMBObject>() {
+            @Override
+            public void done(List<NCMBObject> results, NCMBException e) {
+                if (e != null) {
+                    //検索失敗時の処理
+                    System.out.println("getAllTask failed");
+                } else {
+                    //検索成功時の処理
+                    List<String> tasklist = new ArrayList<String>();
+                    System.out.println("getAllTask success");
+                    for(NCMBObject obj: results){
+                        tasklist.add(obj.getString("task"));
+                        System.out.println(obj.getString("task"));
+                    }
+                    TaskListActivity.setList(tasklist);
+                }
+            }
+        });
     }
 
     public static void storeTask(String name){
