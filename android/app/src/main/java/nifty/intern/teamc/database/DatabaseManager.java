@@ -18,8 +18,8 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
  * Created by USER on 2016/08/31.
  */
 public class DatabaseManager {
-    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
-    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
+    private static final String APP_KEY="APP_KEY";
+    private static final String CLIENT_KEY="CLIENT_KEY";
     public List<String> tasklist = new ArrayList<String>();
 
     public static void initialize(Context context) {
