@@ -1,18 +1,22 @@
 package nifty.intern.teamc.IbeaconReceiver;
 
+import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 /**
  * Created by USER on 2016/08/31.
  */
-public class IbeaconReceiver extends AppCompatActivity {
+public class IbeaconReceiver extends Service {
     private BluetoothAdapter mBluetoothAdapter; // BLE機器のスキャンを行うクラス
     Handler mHandler = new Handler(); // スキャンを別スレッドで行うためのハンドラ
     private static final String TAG = "IbeaconReceiver";
@@ -20,8 +24,12 @@ public class IbeaconReceiver extends AppCompatActivity {
     private Runnable runnable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public IBinder onBind(Intent arg0){
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
 
         Log.d(TAG, "InitIBeacon");
 
@@ -95,9 +103,7 @@ public class IbeaconReceiver extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    public void onDestroy() {
         mHandler.removeCallbacks(runnable); // 終了時にコールバック削除
 
         mBluetoothAdapter.stopLeScan(mLeScanCallback); // スキャン終了
