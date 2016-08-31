@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import nifty.intern.teamc.database.DatabaseManager;
+
 public class TaskListActivity extends AppCompatActivity {
 
     @Override
@@ -20,9 +22,7 @@ public class TaskListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //NCMB initialize
-        Mbaas.initialize(this.getApplicationContext());
-
-        Mbaas.storeTask("aiueo");
+        DatabaseManager.initialize(this.getApplicationContext());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
