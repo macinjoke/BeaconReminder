@@ -1,6 +1,7 @@
 package nifty.intern.teamc.beaconreminder;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,9 @@ public class CreateTaskActivity extends AppCompatActivity {
                                        EditText editText = (EditText) findViewById(R.id.editText);
                                        String taskName = editText.getText().toString();
                                        DatabaseManager.storeTask(taskName);
+                                       Intent intent = new Intent();
+                                       intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.TaskListActivity");
+                                       startActivity(intent);
                                    }
                                }
         );
