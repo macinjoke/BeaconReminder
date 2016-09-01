@@ -3,6 +3,7 @@ package nifty.intern.teamc.database;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,12 +22,12 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
 /**
  * Created by USER on 2016/08/31.
  */
-public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
+public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
 
     private static final String APP_KEY="";
     private static final String CLIENT_KEY="";
 
-    private static final String MEMBERCLASS="Member";
+    public static final String MEMBERCLASS="Member";
     private static final String MEMBERNAME="name";
     private static final String MEMBERID="memberid";
     private static final String BEACONID="beaconid";
@@ -34,7 +35,7 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
     private static final String OBJECTID ="objectId";
 
-    private static final String TASKCLASS ="Task";
+    public static final String TASKCLASS ="Task";
     private static final String TASKNAME ="name";
     private static final String TASKDETAIL ="detail";
     private static final String ORIGINID ="originid";
@@ -42,12 +43,12 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
 
     private Context context;
-    private ListView listView;
+    private AdapterView view;
 
-    public DatabaseManager(Context context, ListView listView){
+    public DatabaseManager(Context context, AdapterView view){
         super();
         this.context = context;
-        this.listView = listView;
+        this.view = view;
     }
 
     public void initialize(Context context) {
@@ -116,15 +117,22 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
     }
 
     @Override
-    protected List<String> doInBackground(Integer... value) {
-        return  getAllTask();
+    protected List<String> doInBackground(String... value) {
+        if(value[0] == TASKCLASS){
+            return  getAllTask();
+        }else if(value[0] == MEMBERCLASS) {
+            return getAllMember();
+        }else{
+            System.out.println("ERROR : doInBackground ");
+            return new ArrayList<String>();
+        }
     }
 
     @Override
     protected void onPostExecute(List<String> result) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
                 android.R.layout.simple_expandable_list_item_1, result);
-        listView.setAdapter(adapter);
+        view.setAdapter(adapter);
     }
 
     public static void storeTask(String name){

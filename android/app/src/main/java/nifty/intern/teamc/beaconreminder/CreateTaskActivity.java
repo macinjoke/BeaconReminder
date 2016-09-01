@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
+import nifty.intern.teamc.IbeaconReceiver.IbeaconReceiver;
 import nifty.intern.teamc.database.DatabaseManager;
 
 /**
@@ -30,27 +32,38 @@ public class CreateTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
 
-        EditText editText = (EditText) findViewById(R.id.editText);
-        // エディットテキストのテキストを設定します
-//        editText.setText("テスト");
-        // エディットテキストのテキストを全選択します
-//        editText.selectAll();
-        // エディットテキストのテキストを取得します
-//        String text = editText.getText().toString();
-
         Button btn = (Button) findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
                                    @Override
                                    public void onClick(View v) {
-                                       EditText editText = (EditText) findViewById(R.id.editText);
-                                       String taskName = editText.getText().toString();
-                                       DatabaseManager.storeTask(taskName);
+                                       // タスク名
+                                       EditText taskNameText = (EditText) findViewById(R.id.taskEditText);
+                                       String taskName = taskNameText.getText().toString();
+                                       // 対象人物
+                                       Spinner spinner = (Spinner) findViewById(R.id.spinner);
+                                       String targetName = (String) spinner.getSelectedItem();
+                                       // タスク詳細文
+                                       EditText taskDescText = (EditText) findViewById(R.id.discEditText);
+                                       String taskDesc = taskDescText.getText().toString();
+
+                                       DatabaseManager.storeTask(taskName, IbeaconReceiver.MemberID, targetName, taskDesc);
+
                                        Intent intent = new Intent();
                                        intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.TaskListActivity");
                                        startActivity(intent);
                                    }
                                }
         );
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        DatabaseManager databaseManager = new DatabaseManager(this, spinner);
+        //NCMB initialize
+        databaseManager.initialize(this.getApplicationContext());
+        databaseManager.execute(DatabaseManager.MEMBERCLASS);
     }
 
 }
