@@ -23,8 +23,15 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
  */
 public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
-    private static final String APP_KEY="APP_KEY";
-    private static final String CLIENT_KEY="CLIENT_KEY";
+    private static final String APP_KEY="";
+    private static final String CLIENT_KEY="";
+    private static final String MEMBERCLASS="Member";
+    private static final String NAME="name";
+    private static final String MEMBERID="memberid";
+    private static final String BEACONID="beaconid";
+    private static final String RSSI="rssi";
+    private static final String OBJECTID ="objectId";
+
 
     private Context context;
     private ListView listView;
@@ -37,6 +44,33 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
     public void initialize(Context context) {
         NCMB.initialize(context, APP_KEY, CLIENT_KEY);
+    }
+
+
+    public static void updateMember(String memberid, String beaconid, Integer rssi){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+        query.whereEqualTo(MEMBERID, memberid);
+        try {
+            List<NCMBObject> list = query.find();
+            for(NCMBObject obj: list){
+                obj.put(BEACONID, beaconid);
+                obj.put(RSSI, rssi);
+                obj.saveInBackground(new DoneCallback() {
+                    @Override
+                    public void done(NCMBException e) {
+                        if(e != null){
+                            //保存に失敗した場合の処理
+                            System.out.println("storeTask failed");
+                        }else {
+                            //保存に成功した場合の処理
+                            System.out.println("storeTask success");
+                        }
+                    }
+                });
+            }
+        }catch(NCMBException e){
+            System.out.println("updateMember failed");
+        }
     }
 
 
