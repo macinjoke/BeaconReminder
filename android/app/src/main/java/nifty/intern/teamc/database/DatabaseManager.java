@@ -86,12 +86,12 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
         //TestClassを検索するためのNCMBQueryインスタンスを作成
         NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
         //名前が設定してあるすべてのレコードを取得
-        query.whereExists(NAME);
+        query.whereExists(MEMBERNAME);
         List<String> memberlist = new ArrayList<String>();
         try {
             List<NCMBObject> results = query.find();
             for(NCMBObject obj: results){
-                memberlist.add(obj.getString(NAME));
+                memberlist.add(obj.getString(MEMBERNAME));
             }
         }catch(NCMBException e){
         }
