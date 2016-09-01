@@ -24,12 +24,12 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
  */
 public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
-    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
-    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
+    private static final String APP_KEY="";
+    private static final String CLIENT_KEY="";
 
-    private static final String MEMBERCLASS="Member";
-    private static final String MEMBERNAME="name";
-    private static final String MEMBERID="memberid";
+    public static final String MEMBERCLASS="Member";
+    public static final String MEMBERNAME="name";
+    public static final String MEMBERID="memberid";
     private static final String BEACONID="beaconid";
     private static final String RSSI="rssi";
 
@@ -39,7 +39,7 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
     private static final String TASKNAME ="name";
     private static final String TASKDETAIL ="detail";
     private static final String ORIGINID ="originid";
-    private static final String TARGETNAME ="targetname";
+    public static final String TARGETNAME ="targetname";
 
 
     private Context context;
