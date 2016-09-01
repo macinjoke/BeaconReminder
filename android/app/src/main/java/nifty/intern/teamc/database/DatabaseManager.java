@@ -25,12 +25,20 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
     private static final String APP_KEY="";
     private static final String CLIENT_KEY="";
+
     private static final String MEMBERCLASS="Member";
-    private static final String NAME="name";
+    private static final String MEMBERNAME="name";
     private static final String MEMBERID="memberid";
     private static final String BEACONID="beaconid";
     private static final String RSSI="rssi";
+
     private static final String OBJECTID ="objectId";
+
+    private static final String TASKCLASS ="Task";
+    private static final String TASKNAME ="name";
+    private static final String TASKDETAIL ="detail";
+    private static final String ORIGINID ="originid";
+    private static final String TARGETNAME ="targetname";
 
 
     private Context context;
@@ -140,4 +148,30 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
             }
         });
     }
+
+    public static void storeTask(String taskname, String originid, String targetname, String taskdetail){
+        // クラスのNCMBObjectを作成
+        NCMBObject obj = new NCMBObject(TASKCLASS);
+
+        // オブジェクトの値を設定
+        obj.put(TASKNAME, taskname);
+        obj.put(ORIGINID, originid);
+        obj.put(TARGETNAME, targetname);
+        obj.put(TASKDETAIL, taskdetail);
+
+        // データストアへの登録
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if(e != null){
+                    //保存に失敗した場合の処理
+                    System.out.println("storeTask failed");
+                }else {
+                    //保存に成功した場合の処理
+                    System.out.println("storeTask success");
+                }
+            }
+        });
+    }
+
 }
