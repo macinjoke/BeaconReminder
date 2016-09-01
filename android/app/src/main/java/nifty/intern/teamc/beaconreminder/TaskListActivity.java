@@ -10,6 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import nifty.intern.teamc.database.DatabaseManager;
 
 import nifty.intern.teamc.IbeaconReceiver.IbeaconReceiver;
 import nifty.intern.teamc.database.DatabaseManager;
@@ -23,25 +30,25 @@ public class TaskListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Bluetooth Initialize
-        startService(new Intent(this, IbeaconReceiver.class));
-
-        //NCMB initialize
-        DatabaseManager.initialize(this.getApplicationContext());
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Intent intent = new Intent();
                 intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.CreateTaskActivity");
-
-// SubActivity の起動
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        ListView lv = (ListView) findViewById(R.id.listView1);
+        DatabaseManager databaseManager = new DatabaseManager(this, lv);
+        //NCMB initialize
+        databaseManager.initialize(this.getApplicationContext());
+        databaseManager.execute();
     }
 
     @Override

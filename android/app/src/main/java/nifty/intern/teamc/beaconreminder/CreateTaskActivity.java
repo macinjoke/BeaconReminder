@@ -1,6 +1,7 @@
 package nifty.intern.teamc.beaconreminder;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import nifty.intern.teamc.database.DatabaseManager;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -40,8 +43,11 @@ public class CreateTaskActivity extends AppCompatActivity {
                                    @Override
                                    public void onClick(View v) {
                                        EditText editText = (EditText) findViewById(R.id.editText);
-                                       String text = editText.getText().toString();
-                                       Log.d("CreateTaskActivity", text);
+                                       String taskName = editText.getText().toString();
+                                       DatabaseManager.storeTask(taskName);
+                                       Intent intent = new Intent();
+                                       intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.TaskListActivity");
+                                       startActivity(intent);
                                    }
                                }
         );
