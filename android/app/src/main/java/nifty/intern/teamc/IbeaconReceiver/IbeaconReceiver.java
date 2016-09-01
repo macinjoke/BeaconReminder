@@ -15,6 +15,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.nifty.cloud.mb.core.FindCallback;
+import com.nifty.cloud.mb.core.NCMBException;
+import com.nifty.cloud.mb.core.NCMBObject;
+import com.nifty.cloud.mb.core.NCMBQuery;
+
+import java.util.List;
+
 import nifty.intern.teamc.database.DatabaseManager;
 
 /**
@@ -117,8 +124,26 @@ public class IbeaconReceiver extends Service {
                 // 繰り返し処理を書く
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
 
-                DatabaseManager.getMemberRecord(beaconId);
-                DatabaseManager.getTaskRecord();
+                NCMBQuery<NCMBObject> queryTask = new NCMBQuery<>("Task");
+
+                List<NCMBObject> obj1 = DatabaseManager.getMemberRecord(beaconId);
+                List<NCMBObject> obj2 = DatabaseManager.getTaskRecord();
+
+                // MemberデータクラスのmembernameとTaskデータクラスのtargetnameが一致しているかを
+                // 総当りで確認
+                for(NCMBObject memberobj: obj1) {
+                    String memberName = memberobj.getString(DatabaseManager.MEMBERNAME);
+                    Log.d("NCMBString1: ", memberName);
+                    for (NCMBObject taskobj: obj2) {
+                        String taskName = taskobj.getString(DatabaseManager.TARGETNAME);
+                        Log.d("NCMBString2: ", taskName);
+                        if (memberName.equals(taskName)){
+                            Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
+                        } else {
+                            Log.d("NCMB: ", "failed"); // 一致しなかったときの処理
+                        }
+                    }
+                }
 
                 // 終了 -> 開始をしないとなぜか更新されない
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
