@@ -1,4 +1,4 @@
-﻿package nifty.intern.teamc.database;
+package nifty.intern.teamc.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
