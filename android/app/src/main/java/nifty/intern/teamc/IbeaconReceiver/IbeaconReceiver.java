@@ -10,9 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import nifty.intern.teamc.database.DatabaseManager;
 
 /**
  * Created by USER on 2016/08/31.
@@ -24,12 +27,16 @@ public class IbeaconReceiver extends Service {
     private final int REPEAT_INTERVAL = 10000; // 更新のくりかえし間隔（ms）
     private Runnable runnable;
 
-    private static String uuid;
+    private String MemberID; // 端末の固有番号を格納
+
+    private static String beaconId;
     private static String major;
     private static String minor;
 
     @Override
     public void onCreate() {
+
+        MemberID = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Log.d(TAG, "onCreate");
 
@@ -49,12 +56,15 @@ public class IbeaconReceiver extends Service {
 
             // iBeacon端末なら、詳細をログに出力する
             if (flag == true) {
-                Log.d(TAG, "UUID: " + uuid);
+                Log.d(TAG, "UUID: " + beaconId);
                 Log.d(TAG, "Major: " + major);
                 Log.d(TAG, "Minor: " + minor);
                 Log.d(TAG, "device name: " + device.getName()); // デバイス名 (null)
                 Log.d(TAG, "device address: " + device.getAddress()); // MAC Address
                 Log.d(TAG, "Device Strength; " + Integer.toString(rssi)); // 電波強度
+
+                // データベースに登録
+                DatabaseManager.updateMember(MemberID, beaconId, rssi);
             }
         }
     };
@@ -65,7 +75,7 @@ public class IbeaconReceiver extends Service {
             if ( (scanRecord[5] == (byte)0x4c ) && (scanRecord[6] == (byte)0x00) &&
                     (scanRecord[7] == (byte)0x02) && (scanRecord[8] == (byte)0x15)) {
                 // 受信したUUID, Major, Minorの型変換
-                uuid = Integer.toHexString(scanRecord[9] & 0xff)
+                beaconId = Integer.toHexString(scanRecord[9] & 0xff)
                         +  Integer.toHexString(scanRecord[10] & 0xff)
                         +  Integer.toHexString(scanRecord[11] & 0xff)
                         +  Integer.toHexString(scanRecord[12] & 0xff)
