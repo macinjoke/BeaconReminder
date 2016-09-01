@@ -1,5 +1,6 @@
 package nifty.intern.teamc.IbeaconReceiver;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -190,7 +191,8 @@ public class IbeaconReceiver extends Service {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(title)
-                .setContentText(text);
+                .setContentText(text)
+                .setDefaults(Notification.DEFAULT_SOUND);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, TaskListActivity.class);
 
