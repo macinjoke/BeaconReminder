@@ -2,6 +2,7 @@ package nifty.intern.teamc.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.health.SystemHealthManager;
 import android.provider.ContactsContract;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,8 +24,8 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
  */
 public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
-    private static final String APP_KEY="";
-    private static final String CLIENT_KEY="";
+    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
+    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
     private static final String MEMBERCLASS="Member";
     private static final String NAME="name";
     private static final String MEMBERID="memberid";
@@ -71,6 +72,22 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
         }catch(NCMBException e){
             System.out.println("updateMember failed");
         }
+    }
+
+    public static List<String> getAllMember(){
+        //TestClassを検索するためのNCMBQueryインスタンスを作成
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+        //名前が設定してあるすべてのレコードを取得
+        query.whereExists(NAME);
+        List<String> memberlist = new ArrayList<String>();
+        try {
+            List<NCMBObject> results = query.find();
+            for(NCMBObject obj: results){
+                memberlist.add(obj.getString(NAME));
+            }
+        }catch(NCMBException e){
+        }
+        return memberlist;
     }
 
 
