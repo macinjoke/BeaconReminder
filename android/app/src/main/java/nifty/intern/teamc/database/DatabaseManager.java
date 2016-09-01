@@ -38,8 +38,8 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     private static final String OBJECTID ="objectId";
 
     public static final String TASKCLASS ="Task";
-    private static final String TASKNAME ="name";
-    private static final String TASKDETAIL ="detail";
+    public static final String TASKNAME ="name";
+    public static final String TASKDETAIL ="detail";
     private static final String ORIGINID ="originid";
     public static final String TARGETNAME ="targetname";
 
