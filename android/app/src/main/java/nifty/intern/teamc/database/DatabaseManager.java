@@ -116,6 +116,19 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         }
     }
 
+    public List<NCMBObject> getTasksAll(){
+        //TestClassを検索するためのNCMBQueryインスタンスを作成
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(TASKCLASS);
+        //keyというフィールドがvalueとなっているデータを検索する条件を設定
+        query.whereExists(TASKNAME);
+        try {
+            List<NCMBObject> results = query.find();
+            return results;
+        }catch(NCMBException e){
+            return new ArrayList<NCMBObject>();
+        }
+    }
+
     @Override
     protected List<String> doInBackground(String... value) {
         if(value[0] == TASKCLASS){
