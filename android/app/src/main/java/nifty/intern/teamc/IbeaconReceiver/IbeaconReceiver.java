@@ -116,6 +116,10 @@ public class IbeaconReceiver extends Service {
 
                 // 繰り返し処理を書く
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
+
+                DatabaseManager.getMemberRecord(beaconId);
+                DatabaseManager.getTaskRecord();
+
                 // 終了 -> 開始をしないとなぜか更新されない
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
 

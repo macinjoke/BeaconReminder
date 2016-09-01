@@ -16,6 +16,7 @@ import com.nifty.cloud.mb.core.NCMBQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import nifty.intern.teamc.IbeaconReceiver.IbeaconReceiver;
 import nifty.intern.teamc.beaconreminder.TaskListActivity;
 
 /**
@@ -23,8 +24,8 @@ import nifty.intern.teamc.beaconreminder.TaskListActivity;
  */
 public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
 
-    private static final String APP_KEY="";
-    private static final String CLIENT_KEY="";
+    private static final String APP_KEY="8b780f8a55a3218250526d42cb76e5dcaa71577222951ae021cd144c03c03ae9";
+    private static final String CLIENT_KEY="0f0bfb2c7c7e702fe05aba70f3e274c6571ec3f2e9fc90df1e6ab238745ddaf2";
 
     private static final String MEMBERCLASS="Member";
     private static final String MEMBERNAME="name";
@@ -112,6 +113,33 @@ public class DatabaseManager extends AsyncTask<Integer, Integer, List<String>>{
             return tasklist;
         }catch(NCMBException e){
             return new ArrayList<String>();
+        }
+    }
+
+    public static List<NCMBObject> getMemberRecord(String beaconid){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+        query.whereEqualTo(BEACONID, beaconid);
+        query.whereNotEqualTo(MEMBERID, IbeaconReceiver.MemberID);
+        try{
+            List<NCMBObject> results = query.find();
+            System.out.println("getMember" + results.size());
+            return results;
+        }catch(NCMBException e){
+            System.out.println("getMember");
+            return null;
+        }
+    }
+
+    public static List<NCMBObject> getTaskRecord(){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(TASKCLASS);
+        query.whereEqualTo(ORIGINID, IbeaconReceiver.MemberID);
+        try{
+            List<NCMBObject> results = query.find();
+            System.out.println("getTask" + results.size());
+            return results;
+        }catch(NCMBException e){
+            System.out.println("getTask");
+            return null;
         }
     }
 
