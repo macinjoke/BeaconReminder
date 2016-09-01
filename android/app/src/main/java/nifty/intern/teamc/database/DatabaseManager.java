@@ -17,6 +17,7 @@ import com.nifty.cloud.mb.core.NCMBQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import nifty.intern.teamc.IbeaconReceiver.IbeaconReceiver;
 import nifty.intern.teamc.beaconreminder.TaskListActivity;
 
 /**
@@ -28,18 +29,19 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     private static final String CLIENT_KEY="";
 
     public static final String MEMBERCLASS="Member";
-    private static final String MEMBERNAME="name";
-    private static final String MEMBERID="memberid";
+    public static final String MEMBERNAME="name";
+    public static final String MEMBERID="memberid";
+
     private static final String BEACONID="beaconid";
     private static final String RSSI="rssi";
 
     private static final String OBJECTID ="objectId";
 
     public static final String TASKCLASS ="Task";
-    private static final String TASKNAME ="name";
-    private static final String TASKDETAIL ="detail";
+    public static final String TASKNAME ="name";
+    public static final String TASKDETAIL ="detail";
     private static final String ORIGINID ="originid";
-    private static final String TARGETNAME ="targetname";
+    public static final String TARGETNAME ="targetname";
 
 
     private Context context;
@@ -117,6 +119,32 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         }
     }
 
+    public static List<NCMBObject> getMemberRecord(String beaconid){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+        query.whereEqualTo(BEACONID, beaconid);
+        query.whereNotEqualTo(MEMBERID, IbeaconReceiver.MemberID);
+        try{
+            List<NCMBObject> results = query.find();
+            System.out.println("getMember" + results.size());
+            return results;
+        }catch(NCMBException e){
+            System.out.println("getMember");
+            return null;
+        }
+    }
+
+    public static List<NCMBObject> getTaskRecord(){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(TASKCLASS);
+        query.whereEqualTo(ORIGINID, IbeaconReceiver.MemberID);
+        try{
+            List<NCMBObject> results = query.find();
+            System.out.println("getTask" + results.size());
+            return results;
+        }catch(NCMBException e){
+            System.out.println("getTask");
+            return null;
+        }
+    }
 
     @Override
     protected List<String> doInBackground(String... value) {
