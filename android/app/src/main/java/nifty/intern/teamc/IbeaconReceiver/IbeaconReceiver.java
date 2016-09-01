@@ -1,5 +1,7 @@
 package nifty.intern.teamc.IbeaconReceiver;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -12,9 +14,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import nifty.intern.teamc.beaconreminder.R;
+import nifty.intern.teamc.beaconreminder.TaskListActivity;
 import nifty.intern.teamc.database.DatabaseManager;
 
 /**
@@ -32,6 +38,9 @@ public class IbeaconReceiver extends Service {
     private static String beaconId;
     private static String major;
     private static String minor;
+
+    private NotificationCompat.Builder builder;
+    private NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -144,4 +153,35 @@ public class IbeaconReceiver extends Service {
     public IBinder onBind(Intent arg0){
         return null;
     }
+
+    public void pushNotification(String title, String text){
+        //通知のテストコード
+        builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle(title)
+                .setContentText(text);
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, TaskListActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(TaskListActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        builder.setContentIntent(resultPendingIntent);
+        notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+        notificationManager.notify(1, builder.build());
+    }
+
 }
