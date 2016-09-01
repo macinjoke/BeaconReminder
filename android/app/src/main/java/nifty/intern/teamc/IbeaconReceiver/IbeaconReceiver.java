@@ -27,7 +27,7 @@ public class IbeaconReceiver extends Service {
     private final int REPEAT_INTERVAL = 10000; // 更新のくりかえし間隔（ms）
     private Runnable runnable;
 
-    private String MemberID; // 端末の固有番号を格納
+    public static String MemberID; // 端末の固有番号を格納
 
     private static String beaconId;
     private static String major;
