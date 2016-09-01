@@ -51,7 +51,7 @@ public class TaskListActivity extends AppCompatActivity {
         DatabaseManager databaseManager = new DatabaseManager(this, lv);
         //NCMB initialize
         databaseManager.initialize(this.getApplicationContext());
-        databaseManager.execute();
+        databaseManager.execute(DatabaseManager.TASKCLASS);
     }
 
     @Override
