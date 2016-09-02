@@ -32,7 +32,7 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     public static final String MEMBERNAME="name";
     public static final String MEMBERID="memberid";
 
-    private static final String BEACONID="beaconid";
+    public static final String BEACONID="beaconid";
     private static final String RSSI="rssi";
 
     private static final String OBJECTID ="objectId";
@@ -140,12 +140,23 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         }
     }
 
-
-
-
-    public static List<NCMBObject> getMemberRecord(String beaconid){
-        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+    public static List<NCMBObject> getRoomRecord(String beaconid){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(ROOMCLASS);
         query.whereEqualTo(BEACONID, beaconid);
+        try{
+            List<NCMBObject> results = query.find();
+            System.out.println("getMember" + results.size());
+            return results;
+        }catch(NCMBException e){
+            System.out.println("getMember");
+            return null;
+        }
+    }
+
+
+
+    public static List<NCMBObject> getMemberRecord(){
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
         query.whereNotEqualTo(MEMBERID, IbeaconReceiver.MemberID);
         try{
             List<NCMBObject> results = query.find();
