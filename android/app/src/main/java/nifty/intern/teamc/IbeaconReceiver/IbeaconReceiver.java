@@ -41,6 +41,7 @@ public class IbeaconReceiver extends Service {
     Handler mHandler = new Handler(); // スキャンを別スレッドで行うためのハンドラ
     private static final String TAG = "IbeaconReceiver";
     private final int REPEAT_INTERVAL = 10000; // 更新のくりかえし間隔（ms）
+    private final int RSSI_THRESHOLD = -70;
     private Runnable runnable;
 
     public static String MemberID; // 端末の固有番号を格納
@@ -83,7 +84,11 @@ public class IbeaconReceiver extends Service {
                 Log.d(TAG, "Device Strength; " + Integer.toString(rssi)); // 電波強度
 
                 // データベースに登録
-                DatabaseManager.updateMember(MemberID, beaconId, rssi);
+                // RSSI が閾値以上なら送信する
+                if (rssi >= RSSI_THRESHOLD) {
+                    DatabaseManager.updateMember(MemberID, beaconId, rssi);
+                    Log.d("sendData: ", "UUID: " + beaconId + ", RSSI: " + Integer.toString(rssi) + ", success");
+                }
             }
         }
     };
