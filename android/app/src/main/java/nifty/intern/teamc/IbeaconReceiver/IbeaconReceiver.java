@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
@@ -143,8 +144,10 @@ public class IbeaconReceiver extends Service {
 
                 NCMBQuery<NCMBObject> queryTask = new NCMBQuery<>("Task");
 
-                List<NCMBObject> obj1 = DatabaseManager.getMemberRecord(beaconId);
+                List<NCMBObject> obj1 = DatabaseManager.getMemberRecord();
                 List<NCMBObject> obj2 = DatabaseManager.getTaskRecord();
+                List<NCMBObject> obj3 = DatabaseManager.getRoomRecord(beaconId);
+
 
                 // MemberデータクラスのmembernameとTaskデータクラスのtargetnameが一致しているかを
                 // 総当りで確認
@@ -153,14 +156,34 @@ public class IbeaconReceiver extends Service {
                     Log.d("NCMBString1: ", memberName);
                     for (NCMBObject taskobj: obj2) {
                         String taskName = taskobj.getString(DatabaseManager.TARGETNAME);
+                        String taskLocation = taskobj.getString(DatabaseManager.TASKLOCATION);
                         Log.d("NCMBString2: ", taskName);
-                        if (memberName.equals(taskName)){
-                            Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
-                            pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
-                                    taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+
+                        //ターゲットとメンバーの一人が同じだった場合
+                        if(memberName.equals(taskName)){
+                            String memberLocation = memberobj.getString(DatabaseManager.BEACONID);
+                            //場所の指定がない場合（すれ違った場合）
+                            if(taskLocation.equals("指定しない") && memberLocation.equals(beaconId)){
+                                Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
+                                pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
+                                        taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+                            }
+                            //ルーム名が登録している場所と同じだった場合（近くにいるかは関係ない）
+                            else {
+                                for(NCMBObject roomobj: obj3){
+                                    String roomname = roomobj.getString(DatabaseManager.ROOMNAME);
+                                    String beaacon = roomobj.getString(DatabaseManager.BEACONID);
+                                    if (taskLocation.equals(roomname) && memberLocation.equals(beaacon)){
+                                        Log.d("NCMB: ", "near succeed"); // 照会に成功した際の処理
+                                        pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
+                                                taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+                                    }
+                                }
+                            }
                         } else {
                             Log.d("NCMB: ", "failed"); // 一致しなかったときの処理
                         }
+
                     }
                 }
 
