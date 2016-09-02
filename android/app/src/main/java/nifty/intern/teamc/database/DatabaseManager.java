@@ -187,6 +187,10 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
             return  getAllTask();
         }else if(value[0] == MEMBERCLASS) {
             return getAllMember();
+        }else if(value[0] == ROOMCLASS){
+            List<String> roomList = getAllLocation();
+            roomList.add(0, "指定しない");
+            return roomList;
         }else{
             System.out.println("ERROR : doInBackground ");
             return new ArrayList<String>();

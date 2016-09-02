@@ -40,13 +40,18 @@ public class CreateTaskActivity extends AppCompatActivity {
                                        EditText taskNameText = (EditText) findViewById(R.id.taskEditText);
                                        String taskName = taskNameText.getText().toString();
                                        // 対象人物
-                                       Spinner spinner = (Spinner) findViewById(R.id.spinner);
-                                       String targetName = (String) spinner.getSelectedItem();
+                                       Spinner userSpinner = (Spinner) findViewById(R.id.userSpinner);
+                                       String targetName = (String) userSpinner.getSelectedItem();
+
+                                       // 場所
+                                       Spinner placeSpinner = (Spinner) findViewById(R.id.placeSpinner);
+                                       String place = (String) placeSpinner.getSelectedItem();
+
                                        // タスク詳細文
                                        EditText taskDescText = (EditText) findViewById(R.id.discEditText);
                                        String taskDesc = taskDescText.getText().toString();
 
-                                       DatabaseManager.storeTask(taskName, IbeaconReceiver.MemberID, targetName, taskDesc);
+                                       DatabaseManager.storeTask(taskName, IbeaconReceiver.MemberID, targetName, taskDesc, place);
 
                                        Intent intent = new Intent();
                                        intent.setClassName("nifty.intern.teamc.beaconreminder", "nifty.intern.teamc.beaconreminder.TaskListActivity");
@@ -59,11 +64,18 @@ public class CreateTaskActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        DatabaseManager databaseManager = new DatabaseManager(this, spinner);
+
+        Spinner userSpinner = (Spinner) findViewById(R.id.userSpinner);
+        DatabaseManager databaseManager1 = new DatabaseManager(this, userSpinner);
         //NCMB initialize
-        databaseManager.initialize(this.getApplicationContext());
-        databaseManager.execute(DatabaseManager.MEMBERCLASS);
+        databaseManager1.initialize(this.getApplicationContext());
+        databaseManager1.execute(DatabaseManager.MEMBERCLASS);
+
+        Spinner placeSpinner = (Spinner) findViewById(R.id.placeSpinner);
+        DatabaseManager databaseManager2 = new DatabaseManager(this, placeSpinner);
+        //NCMB initialize
+        databaseManager2.initialize(this.getApplicationContext());
+        databaseManager2.execute(DatabaseManager.ROOMCLASS);
     }
 
 }
