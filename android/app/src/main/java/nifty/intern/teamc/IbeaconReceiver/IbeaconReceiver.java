@@ -158,7 +158,7 @@ public class IbeaconReceiver extends Service {
 
                         //ターゲットとメンバーの一人が同じだった場合
                         if(memberName.equals(taskName)){
-                            String memberLocation = memberobj.getString(DatabaseManager.MEMBERID);
+                            String memberLocation = memberobj.getString(DatabaseManager.BEACONID);
                             //場所の指定がない場合（すれ違った場合）
                             if(taskLocation.equals("指定しない") && memberLocation.equals(beaconId)){
                                 Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
@@ -170,8 +170,9 @@ public class IbeaconReceiver extends Service {
                                 Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
                                 pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
                                         taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
-                            } else{//失敗
-
+                            } else{
+                                Log.d("NCMBbeacon: ", beaconId); // 照会に成功した際の処理
+                                Log.d("NCMBmemberlocation: ", memberLocation); // 照会に成功した際の処理
                             }
                         } else {
                             Log.d("NCMB: ", "failed"); // 一致しなかったときの処理
