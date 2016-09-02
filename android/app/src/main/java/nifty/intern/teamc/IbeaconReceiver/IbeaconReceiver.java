@@ -52,6 +52,7 @@ public class IbeaconReceiver extends Service {
 
     private NotificationCompat.Builder builder;
     private NotificationManager notificationManager;
+    private int notifyID = 1;
 
     @Override
     public void onCreate() {
@@ -223,7 +224,8 @@ public class IbeaconReceiver extends Service {
         notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(notifyID, builder.build());
+        notifyID ++;
     }
 
 }
