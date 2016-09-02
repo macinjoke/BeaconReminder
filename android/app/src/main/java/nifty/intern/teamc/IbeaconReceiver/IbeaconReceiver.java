@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -152,7 +153,9 @@ public class IbeaconReceiver extends Service {
                         if (memberName.equals(taskName)){
                             Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
                             pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
-                                    taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+                                    taskobj.getString(DatabaseManager.TASKDETAIL),
+                                    taskobj.getString(DatabaseManager.TARGETNAME),
+                                    taskobj.getString(DatabaseManager.TASKLOCATION));
                         } else {
                             Log.d("NCMB: ", "failed"); // 一致しなかったときの処理
                         }
@@ -188,7 +191,7 @@ public class IbeaconReceiver extends Service {
         return null;
     }
 
-    public void pushNotification(String title, String text, String targetName){
+    public void pushNotification(String title, String text, String targetName, String roomName){
         //通知のテストコード
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
@@ -200,6 +203,7 @@ public class IbeaconReceiver extends Service {
         resultIntent.putExtra("taskName", title);
         resultIntent.putExtra("taskDesc", text);
         resultIntent.putExtra("targetName", targetName);
+        resultIntent.putExtra("roomName", roomName);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
