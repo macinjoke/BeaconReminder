@@ -140,23 +140,12 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         }
     }
 
-    public static List<NCMBObject> getRoomRecord(String beaconid){
-        NCMBQuery<NCMBObject> query = new NCMBQuery<>(ROOMCLASS);
-        query.whereEqualTo(BEACONID, beaconid);
-        try{
-            List<NCMBObject> results = query.find();
-            System.out.println("getMember" + results.size());
-            return results;
-        }catch(NCMBException e){
-            System.out.println("getMember");
-            return null;
-        }
-    }
 
 
 
-    public static List<NCMBObject> getMemberRecord(){
+    public static List<NCMBObject> getMemberRecord(String beaconid){
         NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
+        query.whereEqualTo(BEACONID, beaconid);
         query.whereNotEqualTo(MEMBERID, IbeaconReceiver.MemberID);
         try{
             List<NCMBObject> results = query.find();
@@ -187,6 +176,10 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
             return  getAllTask();
         }else if(value[0] == MEMBERCLASS) {
             return getAllMember();
+        }else if(value[0] == ROOMCLASS){
+            List<String> roomList = getAllLocation();
+            roomList.add(0, "指定しない");
+            return roomList;
         }else{
             System.out.println("ERROR : doInBackground ");
             return new ArrayList<String>();
