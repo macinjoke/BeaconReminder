@@ -222,7 +222,8 @@ public class IbeaconReceiver extends Service {
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setDefaults(Notification.DEFAULT_SOUND);
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setAutoCancel(true);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ConfirmNotificationActivity.class);
         resultIntent.putExtra("taskName", title);
