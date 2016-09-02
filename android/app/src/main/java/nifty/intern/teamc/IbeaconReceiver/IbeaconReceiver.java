@@ -20,6 +20,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import nifty.intern.teamc.beaconreminder.ConfirmNotificationActivity;
 import nifty.intern.teamc.beaconreminder.R;
 import nifty.intern.teamc.beaconreminder.TaskListActivity;
 
@@ -150,7 +151,8 @@ public class IbeaconReceiver extends Service {
                         Log.d("NCMBString2: ", taskName);
                         if (memberName.equals(taskName)){
                             Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
-                            pushNotification(taskobj.getString(DatabaseManager.TASKNAME), taskobj.getString(DatabaseManager.TASKDETAIL));
+                            pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
+                                    taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
                         } else {
                             Log.d("NCMB: ", "failed"); // 一致しなかったときの処理
                         }
@@ -186,7 +188,7 @@ public class IbeaconReceiver extends Service {
         return null;
     }
 
-    public void pushNotification(String title, String text){
+    public void pushNotification(String title, String text, String targetName){
         //通知のテストコード
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
@@ -194,7 +196,10 @@ public class IbeaconReceiver extends Service {
                 .setContentText(text)
                 .setDefaults(Notification.DEFAULT_SOUND);
         // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, TaskListActivity.class);
+        Intent resultIntent = new Intent(this, ConfirmNotificationActivity.class);
+        resultIntent.putExtra("taskName", title);
+        resultIntent.putExtra("taskDesc", text);
+        resultIntent.putExtra("targetName", targetName);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
