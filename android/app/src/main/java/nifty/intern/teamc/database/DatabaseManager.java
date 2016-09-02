@@ -43,6 +43,9 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     private static final String ORIGINID ="originid";
     public static final String TARGETNAME ="targetname";
 
+    public static final String ROOMCLASS ="Room";
+    public static final String ROOMNAME ="name";
+
 
     private Context context;
     private AdapterView view;
@@ -101,6 +104,23 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         return memberlist;
     }
 
+    public static List<String> getAllLocation(){
+        //TestClassを検索するためのNCMBQueryインスタンスを作成
+        NCMBQuery<NCMBObject> query = new NCMBQuery<>(ROOMCLASS);
+        //名前が設定してあるすべてのレコードを取得
+        query.whereExists(ROOMNAME);
+        List<String> memberlist = new ArrayList<String>();
+        try {
+            List<NCMBObject> results = query.find();
+            for(NCMBObject obj: results){
+                memberlist.add(obj.getString(ROOMNAME));
+                System.out.println("getAllLocation" + obj.getString(ROOMNAME));
+            }
+        }catch(NCMBException e){
+        }
+        return memberlist;
+    }
+
     public List<String> getAllTask(){
         //TestClassを検索するためのNCMBQueryインスタンスを作成
         NCMBQuery<NCMBObject> query = new NCMBQuery<>(TASKCLASS);
@@ -118,6 +138,9 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
             return new ArrayList<String>();
         }
     }
+
+
+
 
     public static List<NCMBObject> getMemberRecord(String beaconid){
         NCMBQuery<NCMBObject> query = new NCMBQuery<>(MEMBERCLASS);
