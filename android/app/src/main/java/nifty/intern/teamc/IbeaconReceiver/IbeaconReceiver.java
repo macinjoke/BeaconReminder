@@ -87,7 +87,7 @@ public class IbeaconReceiver extends Service {
                 // RSSI が閾値以上なら送信する
                 if (rssi >= RSSI_THRESHOLD) {
                     DatabaseManager.updateMember(MemberID, beaconId, rssi);
-                    Log.d("sendData: ", "success");
+                    Log.d("sendData: ", "UUID: " + beaconId + ", RSSI: " + Integer.toString(rssi) + ", success");
                 }
             }
         }
