@@ -40,6 +40,7 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     public static final String TASKCLASS ="Task";
     public static final String TASKNAME ="name";
     public static final String TASKDETAIL ="detail";
+    public static final String TASKLOCATION = "location";
     private static final String ORIGINID ="originid";
     public static final String TARGETNAME ="targetname";
 
@@ -219,6 +220,32 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
         obj.put(ORIGINID, originid);
         obj.put(TARGETNAME, targetname);
         obj.put(TASKDETAIL, taskdetail);
+
+        // データストアへの登録
+        obj.saveInBackground(new DoneCallback() {
+            @Override
+            public void done(NCMBException e) {
+                if(e != null){
+                    //保存に失敗した場合の処理
+                    System.out.println("storeTask failed");
+                }else {
+                    //保存に成功した場合の処理
+                    System.out.println("storeTask success");
+                }
+            }
+        });
+    }
+
+    public static void storeTask(String taskname, String originid, String targetname, String taskdetail, String location){
+        // クラスのNCMBObjectを作成
+        NCMBObject obj = new NCMBObject(TASKCLASS);
+
+        // オブジェクトの値を設定
+        obj.put(TASKNAME, taskname);
+        obj.put(ORIGINID, originid);
+        obj.put(TARGETNAME, targetname);
+        obj.put(TASKDETAIL, taskdetail);
+        obj.put(TASKLOCATION, location);
 
         // データストアへの登録
         obj.saveInBackground(new DoneCallback() {
