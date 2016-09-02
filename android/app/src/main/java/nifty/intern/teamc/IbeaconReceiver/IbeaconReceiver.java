@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -53,6 +54,7 @@ public class IbeaconReceiver extends Service {
 
     private NotificationCompat.Builder builder;
     private NotificationManager notificationManager;
+    private int notifyID = 1;
 
     @Override
     public void onCreate() {
@@ -163,10 +165,12 @@ public class IbeaconReceiver extends Service {
                         if(memberName.equals(taskName)){
                             String memberLocation = memberobj.getString(DatabaseManager.BEACONID);
                             //場所の指定がない場合（すれ違った場合）
-                            if(taskLocation.equals("指定しない") && memberLocation.equals(beaconId)){
+                            if(taskLocation.equals(DatabaseManager.NOROOM) && memberLocation.equals(beaconId)){
                                 Log.d("NCMB: ", "succeed"); // 照会に成功した際の処理
                                 pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
-                                        taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+                                        taskobj.getString(DatabaseManager.TASKDETAIL),
+                                        taskobj.getString(DatabaseManager.TARGETNAME),
+                                        taskobj.getString(DatabaseManager.TASKLOCATION));
                             }
                             //ルーム名が登録している場所と同じだった場合（近くにいるかは関係ない）
                             else {
@@ -176,7 +180,9 @@ public class IbeaconReceiver extends Service {
                                     if (taskLocation.equals(roomname) && memberLocation.equals(beaacon)){
                                         Log.d("NCMB: ", "near succeed"); // 照会に成功した際の処理
                                         pushNotification(taskobj.getString(DatabaseManager.TASKNAME),
-                                                taskobj.getString(DatabaseManager.TASKDETAIL), taskobj.getString(DatabaseManager.TARGETNAME));
+                                                taskobj.getString(DatabaseManager.TASKDETAIL),
+                                                taskobj.getString(DatabaseManager.TARGETNAME),
+                                                taskobj.getString(DatabaseManager.TASKLOCATION));
                                     }
                                 }
                             }
@@ -216,7 +222,7 @@ public class IbeaconReceiver extends Service {
         return null;
     }
 
-    public void pushNotification(String title, String text, String targetName){
+    public void pushNotification(String title, String text, String targetName, String roomName){
         //通知のテストコード
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
@@ -229,6 +235,7 @@ public class IbeaconReceiver extends Service {
         resultIntent.putExtra("taskName", title);
         resultIntent.putExtra("taskDesc", text);
         resultIntent.putExtra("targetName", targetName);
+        resultIntent.putExtra("roomName", roomName);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -248,7 +255,8 @@ public class IbeaconReceiver extends Service {
         notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(notifyID, builder.build());
+        notifyID ++;
     }
 
 }

@@ -47,6 +47,8 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
     public static final String ROOMCLASS ="Room";
     public static final String ROOMNAME ="name";
 
+    public static final String NOROOM = "指定しない";
+
 
     private Context context;
     private AdapterView view;
@@ -189,7 +191,7 @@ public class DatabaseManager extends AsyncTask<String, Integer, List<String>>{
             return getAllMember();
         }else if(value[0] == ROOMCLASS){
             List<String> roomList = getAllLocation();
-            roomList.add(0, "指定しない");
+            roomList.add(0, NOROOM);
             return roomList;
         }else{
             System.out.println("ERROR : doInBackground ");
